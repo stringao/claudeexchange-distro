@@ -7,7 +7,7 @@ App desktop para alternar entre provedores AI (Claude, GLM, Minimax) no Claude C
 Abre o **PowerShell** e corre:
 
 ```powershell
-irm https://raw.githubusercontent.com/stringao/claudeexchange-distro/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/stringao/claudeexchange-distro/master/install.ps1 | iex
 ```
 
 Depois reinicie o terminal e execute:
