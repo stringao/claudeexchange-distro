@@ -4,9 +4,32 @@
 $ErrorActionPreference = "Stop"
 $AppName = "ClaudeExchange"
 $InstallDir = "$env:LOCALAPPDATA\$AppName"
-$ExeName = "claude-exchange.exe"
+$BaseDownloadUrl = "https://github.com/stringao/claudeexchange-distro/releases/latest/download"
 
+# Deteção de arquitetura
+$Arch = if ($env:PROCESSOR_ARCHITEW6432) {
+    switch ($env:PROCESSOR_ARCHITEW6432) {
+        "AMD64"  { "x64" }
+        "ARM64"  { "arm64" }
+        default  { "x64" }
+    }
+} else {
+    switch ($env:PROCESSOR_ARCHITECTURE) {
+        "AMD64"  { "x64" }
+        "ARM64"  { "arm64" }
+        "x86"    { "x86" }
+        default  { "x64" }
+    }
+}
+
+$RemoteName = "ClaudeExchange-windows-$Arch.exe"
+$LocalName = "claude-exchange.exe"
+$DownloadUrl = "$BaseDownloadUrl/$RemoteName"
+$DestPath = Join-Path $InstallDir $LocalName
+
+Write-Host ""
 Write-Host "A instalar $AppName..." -ForegroundColor Cyan
+Write-Host "Arquitetura detectada: $Arch"
 
 # Criar pasta de instalação
 if (-not (Test-Path $InstallDir)) {
@@ -14,14 +37,12 @@ if (-not (Test-Path $InstallDir)) {
 }
 
 # Descarregar executável
-$DownloadUrl = "https://github.com/stringao/claudeexchange-distro/releases/latest/download/$ExeName"
-$DestPath = Join-Path $InstallDir $ExeName
-
 Write-Host "A descarregar $DownloadUrl..."
 try {
     Invoke-WebRequest -Uri $DownloadUrl -OutFile $DestPath -UseBasicParsing
 } catch {
     Write-Host "Erro ao descarregar: $_" -ForegroundColor Red
+    Write-Host "Arquitetura $Arch pode nao estar disponivel." -ForegroundColor Yellow
     exit 1
 }
 
@@ -32,7 +53,20 @@ if ($UserPath -notlike "*$InstallDir*") {
     $env:Path = "$env:Path;$InstallDir"
 }
 
+# Criar atalho no Desktop
+$DesktopPath = [Environment]::GetFolderPath("Desktop")
+$ShortcutPath = Join-Path $DesktopPath "$AppName.lnk"
+
+$WshShell = New-Object -ComObject WScript.Shell
+$Shortcut = $WshShell.CreateShortcut($ShortcutPath)
+$Shortcut.TargetPath = $DestPath
+$Shortcut.WorkingDirectory = $InstallDir
+$Shortcut.Description = $AppName
+$Shortcut.Save()
+
 Write-Host ""
 Write-Host "$AppName instalado com sucesso!" -ForegroundColor Green
-Write-Host "Executavel: $DestPath"
-Write-Host "Reinicie o terminal e execute: claude-exchange" -ForegroundColor Yellow
+Write-Host "Executavel : $DestPath"
+Write-Host "Atalho     : $ShortcutPath"
+Write-Host "Comando    : claude-exchange (reinicie o terminal)" -ForegroundColor Yellow
+Write-Host ""
