@@ -4,17 +4,32 @@
 $ErrorActionPreference = "Stop"
 $AppName = "ClaudeExchange"
 $InstallDir = "$env:LOCALAPPDATA\$AppName"
-$ExeName = "ClaudeExchange.exe"
+$BaseURL = "https://github.com/stringao/claudeexchange-distro/releases/latest/download"
 
 Write-Host "A instalar $AppName..." -ForegroundColor Cyan
 
-# Criar pasta de instalação
+# Deteção de arquitetura
+$Arch = [System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString().ToLower()
+switch ($Arch) {
+    "x64"   { $Binary = "ClaudeExchange-windows-x64.exe" }
+    "x86"   { $Binary = "ClaudeExchange-windows-x86.exe" }
+    "arm64" { $Binary = "ClaudeExchange-windows-arm64.exe" }
+    default {
+        Write-Host "Arquitetura nao suportada: $Arch" -ForegroundColor Red
+        exit 1
+    }
+}
+
+Write-Host "Arquitetura detetada: $Arch"
+
+# Criar pasta de instalacao
 if (-not (Test-Path $InstallDir)) {
     New-Item -ItemType Directory -Path $InstallDir | Out-Null
 }
 
-# Descarregar executável
-$DownloadUrl = "https://github.com/stringao/claudeexchange-distro/releases/latest/download/$ExeName"
+# Descarregar executavel
+$DownloadUrl = "$BaseURL/$Binary"
+$ExeName = "$AppName.exe"
 $DestPath = Join-Path $InstallDir $ExeName
 
 Write-Host "A descarregar $DownloadUrl..."
@@ -25,7 +40,7 @@ try {
     exit 1
 }
 
-# Adicionar ao PATH do utilizador (se ainda não estiver)
+# Adicionar ao PATH do utilizador (se ainda nao estiver)
 $UserPath = [Environment]::GetEnvironmentVariable("Path", "User")
 if ($UserPath -notlike "*$InstallDir*") {
     [Environment]::SetEnvironmentVariable("Path", "$UserPath;$InstallDir", "User")
