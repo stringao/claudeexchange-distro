@@ -40,6 +40,8 @@ Descarregue o binario para a sua plataforma na [pagina de releases](https://gith
 
 | Versao | Notas |
 |--------|-------|
+| 1.1.2 | Fix Kimi Code endpoint (api.kimi.com/coding/) |
+| 1.1.1 | Fix ENABLE_TOOL_SEARCH para Kimi provider |
 | 1.1.0 | Interface redesenhada, sobre com versao, icones corrigidos, provedor Kimi |
 | 1.0.0 | Versao inicial - suporte Claude, GLM, Minimax |
 
