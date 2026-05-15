@@ -1,5 +1,8 @@
 # ClaudeExchange - Instalador Windows
-# Correr no PowerShell: irm https://raw.githubusercontent.com/stringao/claudeexchange-distro/master/install.ps1 | iex
+# Instalar: powershell -c "irm https://raw.githubusercontent.com/stringao/claudeexchange-distro/master/install.ps1 | iex"
+
+# Garantir TLS 1.2 para downloads do GitHub
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 $ErrorActionPreference = "Stop"
 $AppName = "ClaudeExchange"
@@ -45,6 +48,19 @@ $UserPath = [Environment]::GetEnvironmentVariable("Path", "User")
 if ($UserPath -notlike "*$InstallDir*") {
     [Environment]::SetEnvironmentVariable("Path", "$UserPath;$InstallDir", "User")
     $env:Path = "$env:Path;$InstallDir"
+}
+
+# Criar atalho no desktop (se ainda nao existir)
+$DesktopPath = [Environment]::GetFolderPath("Desktop")
+$ShortcutPath = Join-Path $DesktopPath "$AppName.lnk"
+if (-not (Test-Path $ShortcutPath)) {
+    $WshShell = New-Object -ComObject WScript.Shell
+    $Shortcut = $WshShell.CreateShortcut($ShortcutPath)
+    $Shortcut.TargetPath = $DestPath
+    $Shortcut.WorkingDirectory = $InstallDir
+    $Shortcut.Description = $AppName
+    $Shortcut.Save()
+    Write-Host "Atalho criado no desktop"
 }
 
 Write-Host ""

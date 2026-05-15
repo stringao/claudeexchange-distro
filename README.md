@@ -6,10 +6,10 @@ App desktop para alternar entre provedores AI (Claude, GLM, Minimax, Kimi) no Cl
 
 ### Windows
 
-Abre o **PowerShell** e corre:
+Corre no terminal (CMD ou PowerShell):
 
 ```powershell
-irm https://raw.githubusercontent.com/stringao/claudeexchange-distro/master/install.ps1 | iex
+powershell -c "irm https://raw.githubusercontent.com/stringao/claudeexchange-distro/master/install.ps1 | iex"
 ```
 
 ### Linux / macOS
