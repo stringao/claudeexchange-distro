@@ -68,6 +68,24 @@ if [[ ":$PATH:" != *":$INSTALL_DIR:"* ]]; then
     echo "PATH atualizado em $SHELL_RC"
 fi
 
+# Criar atalho no desktop (se ainda nao existir)
+DESKTOP_DIR="$(xdg-user-dir DESKTOP 2>/dev/null || echo "$HOME/Desktop")"
+SHORTCUT_PATH="$DESKTOP_DIR/$APP_NAME.desktop"
+if [[ ! -f "$SHORTCUT_PATH" ]]; then
+    if [[ -d "$DESKTOP_DIR" ]]; then
+        cat > "$SHORTCUT_PATH" <<DESKTOP
+[Desktop Entry]
+Type=Application
+Name=$APP_NAME
+Exec=$DEST
+Terminal=false
+Categories=Utility;
+DESKTOP
+        chmod +x "$SHORTCUT_PATH"
+        echo "Atalho criado no desktop"
+    fi
+fi
+
 echo ""
 echo "$APP_NAME instalado com sucesso!"
 echo "Executavel: $DEST"
