@@ -1,10 +1,10 @@
 # ClaudeExchange - Instalador Windows
-# Correr no PowerShell: irm https://raw.githubusercontent.com/stringao/claudeexchange-distro/main/install.ps1 | iex
+# Correr no PowerShell: irm https://raw.githubusercontent.com/stringao/claudeexchange-distro/master/install.ps1 | iex
 
 $ErrorActionPreference = "Stop"
 $AppName = "ClaudeExchange"
 $InstallDir = "$env:LOCALAPPDATA\$AppName"
-$ExeName = "claude-exchange.exe"
+$ExeName = "ClaudeExchange.exe"
 
 Write-Host "A instalar $AppName..." -ForegroundColor Cyan
 
@@ -35,4 +35,4 @@ if ($UserPath -notlike "*$InstallDir*") {
 Write-Host ""
 Write-Host "$AppName instalado com sucesso!" -ForegroundColor Green
 Write-Host "Executavel: $DestPath"
-Write-Host "Reinicie o terminal e execute: claude-exchange" -ForegroundColor Yellow
+Write-Host "Reinicie o terminal e execute: ClaudeExchange" -ForegroundColor Yellow
